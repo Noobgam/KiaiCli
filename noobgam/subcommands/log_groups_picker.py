@@ -1,5 +1,6 @@
 from noobgam.fetchers.cloudwatch import get_log_groups
 from noobgam.subcommands.subcommand import SubCommand, debug
+from noobgam.utils.completion_utils import complete_text
 
 
 class LogGroupsPicker(SubCommand):
@@ -42,14 +43,10 @@ class LogGroupsPicker(SubCommand):
         if not line.endswith(text):
             return []
 
-        # this breaks autocompletion.
-        delimeter = line[-len(text) - 1]
-        if delimeter in '/-':
-            return []
-
-        debug(f'Completing [{text}] in line [{line}]')
-        debug(f'delim {delimeter}')
-        return [
-            name for name in get_log_groups()
-            if text in name
-        ]
+        return complete_text(
+            text,
+            line,
+            get_log_groups(),
+            start_index,
+            end_index
+        )
